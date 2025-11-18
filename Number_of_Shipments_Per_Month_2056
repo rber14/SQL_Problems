@@ -1,0 +1,4 @@
+select count(concat(shipment_id, sub_id)) as 'count(shipment_id)', 
+        DATE_FORMAT(shipment_date, '%Y-%m') AS date_ym
+from amazon_shipment
+group by DATE_FORMAT(shipment_date, '%Y-%m')
