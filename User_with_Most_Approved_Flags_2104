@@ -1,0 +1,16 @@
+with cte as (
+    select concat(a.user_firstname," ",a.user_lastname) as username, a.video_id
+    from user_flags as a
+    JOIN flag_review as b ON a.flag_id = b.flag_id
+    where b.reviewed_outcome = 'APPROVED'
+    group by a.video_id
+),
+cte2 as (
+    select username, count(username) as approved
+    from cte
+    group by username
+)
+select username
+from cte2
+where approved = (select max(approved) from cte2)
+
