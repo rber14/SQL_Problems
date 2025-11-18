@@ -1,0 +1,18 @@
+with cte as (
+    select *, row_number() over (partition by voter) as row_num
+    from voting_results
+),
+cte2 as (
+    select voter, 1.0 / max(row_num)  as deci 
+    from cte
+    group by voter
+),
+cte3 as (
+    select a.candidate, sum(b.deci) as votes_num
+    from cte a
+    join cte2 b on a.voter = b.voter
+    group by candidate
+)
+select candidate 
+from cte3
+limit 1
