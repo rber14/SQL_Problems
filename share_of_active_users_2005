@@ -1,0 +1,5 @@
+select 
+    sum(case 
+        when status = 'open' and country = 'usa' then 1
+    end) / count(user_id) * 100 as us_active_share
+from fb_active_users
