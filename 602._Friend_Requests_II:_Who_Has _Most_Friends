@@ -1,0 +1,32 @@
+One way of doing it:
+SELECT id,
+       Count(id) AS num
+FROM   (SELECT requester_id AS id
+        FROM   request_accepted
+        UNION ALL
+        SELECT accepter_id
+        FROM   request_accepted) ppl
+GROUP  BY id
+ORDER  BY Count(id) DESC
+LIMIT  1 
+
+Another way:
+with cte as (
+    select requester_id as id, count(*) as c
+    from RequestAccepted
+    group by requester_id
+),
+cte2 as (
+    select accepter_id as id, count(*) as c
+    from RequestAccepted
+    group by accepter_id
+), cte3 as (
+select * from cte
+union all
+select * from cte2
+)
+select id, sum(c) as num
+from cte3
+group by id
+order by sum(c) desc
+limit 1
